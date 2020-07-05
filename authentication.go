@@ -10,11 +10,9 @@ type Auth struct {
 	prod        bool
 }
 
-const Url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
-
 func (a *Auth) GetAuthKey() (map[string]string, error) {
 	client := &http.Client{}
-	url := setUrl()
+	url := a.setUrl()
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
@@ -30,10 +28,13 @@ func (a *Auth) GetAuthKey() (map[string]string, error) {
 	return make(map[string]string), errors.New("Boiler plate code inserted, will fail")
 }
 func (a *Auth) setUrl() string {
-	url := Url
+	var url string
 	if a.prod {
-		url = "https://safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+		url := "https://safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+	} else {
+		url := "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
 	}
+	return url
 }
 
 // func makeClient() (*http.Client, error) {
