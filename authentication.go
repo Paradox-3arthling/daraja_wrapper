@@ -2,12 +2,14 @@ package daraja_wrapper
 
 import (
 	"errors"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 )
 
 type Auth struct {
 	Key, Secret string
-	prod        bool
+	Prod        bool
 }
 
 func (a *Auth) GetAuthKey() (map[string]string, error) {
@@ -23,16 +25,22 @@ func (a *Auth) GetAuthKey() (map[string]string, error) {
 		return nil, err
 	}
 	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(string(body))
 	// Do safaricom request here
 	// convert response to a map from json
 	return make(map[string]string), errors.New("Boiler plate code inserted, will fail")
 }
 func (a *Auth) setUrl() string {
-	var url string
-	if a.prod {
-		url := "https://safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
-	} else {
-		url := "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+	url := "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+	if a.Prod {
+		url = "https://safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
 	}
 	return url
 }
