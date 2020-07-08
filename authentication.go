@@ -7,6 +7,9 @@ import (
 	"net/http"
 )
 
+// Token - This is the token received from the
+// daraja API. The `Token` struct is used to validate
+// various actions done on the API
 type Token struct {
 	Token  string `json:"access_token"`
 	Expiry string `json:"expires_in"`
@@ -25,6 +28,10 @@ func (a Auth) String() string {
 	return fmt.Sprintf("Key: '%s', Secret: '%s', Prod: '%v'", a.Key, a.Secret, a.Prod)
 }
 func (a *Auth) GetAuthKey() (Token, error) {
+	if a.Secret == "" || a.Key == "" {
+		no_args := fmt.Errorf("The `Auth` struct is missing the `key` or `secret` field! \n Auth: '%v'", a)
+		return Token{}, no_args
+	}
 	client := &http.Client{}
 	url := a.setUrl()
 	req, err := http.NewRequest("GET", url, nil)
@@ -49,7 +56,6 @@ func (a *Auth) GetAuthKey() (Token, error) {
 	if err != nil {
 		return token, err
 	}
-	fmt.Println(token)
 	return token, nil
 }
 func (a *Auth) setUrl() string {
