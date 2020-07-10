@@ -65,7 +65,3 @@ func (a *Auth) setUrl() string {
 	}
 	return url
 }
-
-// func makeClient() (*http.Client, error) {
-
-// }
