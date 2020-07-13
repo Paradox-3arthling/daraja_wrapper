@@ -1,7 +1,12 @@
 package daraja_wrapper
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
+	b64 "encoding/base64"
 	"encoding/json"
+	"encoding/pem"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -54,6 +59,7 @@ func (a *Auth) GetAuthKey() (Token, error) {
 	var token Token
 	err = json.Unmarshal(body, &token)
 	if err != nil {
+		fmt.Println("json.Unmarshal :", token)
 		return token, err
 	}
 	return token, nil
@@ -64,4 +70,23 @@ func (a *Auth) setUrl() string {
 		url = "https://safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
 	}
 	return url
+}
+
+// `SecurityCredentials` - This function is for generating the `SecurityCredentials`
+// used in the parameters for mpesa API
+// `password` is the 'Initiator Security Password'
+// `cert_file` is the contents of the cetificate(Leaving the getting of the file to the user)
+func SecurityCredentials(password, cert_file []byte) (string, error) {
+	block, _ := pem.Decode(cert_file)
+	if block == nil {
+		return "", fmt.Errorf("There is no PEM data found!")
+	}
+	cert, err := x509.ParseCertificate(block.Bytes)
+	if err != nil {
+		return "", err
+	}
+	public := cert.PublicKey.(*rsa.PublicKey)
+	security_cred, err := rsa.EncryptPKCS1v15(rand.Reader, public, password)
+	security_cred_b64 := b64.StdEncoding.EncodeToString([]byte(security_cred))
+	return security_cred_b64, nil
 }
