@@ -10,7 +10,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
+
+const Authentication_url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
 
 // Token - This is the token received from the
 // daraja API. The `Token` struct is used to validate
@@ -38,7 +41,8 @@ func (a *Auth) GetAuthKey() (Token, error) {
 		return Token{}, no_args
 	}
 	client := &http.Client{}
-	url := a.setUrl()
+	url := a.setUrl(Authentication_url)
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return Token{}, err
@@ -64,12 +68,12 @@ func (a *Auth) GetAuthKey() (Token, error) {
 	}
 	return token, nil
 }
-func (a *Auth) setUrl() string {
-	url := "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+func (a *Auth) setUrl(url string) string {
 	if a.Prod {
-		url = "https://safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+		return strings.Replace(url, "sandbox.", "", 1)
+	} else {
+		return url
 	}
-	return url
 }
 
 // `SecurityCredentials` - This function is for generating the `SecurityCredentials`
