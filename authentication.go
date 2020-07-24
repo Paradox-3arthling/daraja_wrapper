@@ -52,6 +52,7 @@ func (a *Auth) GetAuthKey() (Token, error) {
 	if err != nil {
 		return Token{}, err
 	}
+	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return Token{}, err
@@ -59,7 +60,6 @@ func (a *Auth) GetAuthKey() (Token, error) {
 	var token Token
 	err = json.Unmarshal(body, &token)
 	if err != nil {
-		fmt.Println("json.Unmarshal :", token)
 		return token, err
 	}
 	return token, nil
