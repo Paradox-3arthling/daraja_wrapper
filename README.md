@@ -1,3 +1,4 @@
+![Go](https://github.com/Paradox-3arthling/daraja_wrapper/workflows/Go/badge.svg?branch=master)
 # daraja_wrapper
 Meant to be a wrapper library for the daraja API from safaricom Mpesa/Lipa na Mpesa
 
