@@ -25,7 +25,7 @@ type LipaNaMpesaResp map[string]interface{}
 // uses whenever the app is used to make payments.
 func (l *LipaNaMpesaPayStruct) LipaNaMpesaPayment(a *Auth, pass_key string) (LipaNaMpesaResp, error) {
 	l.TransactionType = "CustomerPayBillOnline"
-	l.Password = l.GenPassword(pass_key)
+	l.GenPasswordAndAssign(pass_key)
 	var daraja_resp LipaNaMpesaResp
 
 	token, err := a.GetAuthKey()
@@ -61,7 +61,7 @@ func (l *LipaNaMpesaPayStruct) LipaNaMpesaPayment(a *Auth, pass_key string) (Lip
 	}
 	return daraja_resp, nil
 }
-func (l *LipaNaMpesaPayStruct) GenPassword(pass_key string) string {
+func (l *LipaNaMpesaPayStruct) GenPasswordAndAssign(pass_key string) {
 	var msg string = l.BusinessShortCode + pass_key + l.Timestamp
-	return string(base64.StdEncoding.EncodeToString([]byte(msg)))
+	l.Password = string(base64.StdEncoding.EncodeToString([]byte(msg)))
 }
