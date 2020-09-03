@@ -43,6 +43,7 @@ func (l *LipaNaMpesaPayStruct) LipaNaMpesaPayment(a *Auth, pass_key string) (Lip
 		return daraja_resp, fmt.Errorf("`http.NewRequest/3` got the err -> '%s'.", err)
 	}
 	req.Header.Add("Accept", "application/json")
+	req.Header.Add("content-type", "application/json")
 	req.Header.Add("Authorization", "Bearer "+token.Token)
 
 	client := &http.Client{}
