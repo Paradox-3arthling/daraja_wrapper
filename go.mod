@@ -1,3 +1,3 @@
 module github.com/paradox-3arthling/daraja_wrapper
 
-go 1.14
+go 1.15
