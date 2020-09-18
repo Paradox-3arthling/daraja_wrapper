@@ -24,7 +24,7 @@ Start by importing the project `import "github.com/paradox-3arthling/daraja_wrap
 		PartyA:            "254XXXXXXXXX",
 		PartyB:            "",
 		PhoneNumber:       "254XXXXXXXXX",
-		CallBackURL:       "https://ip_address/response_path",
+		CallBackURL:       CallBackURL,
 		AccountReference:  "test",
 		TransactionDesc:   "test",
 	}
