@@ -59,7 +59,11 @@ func (a *Account_balance) GetAcccountBalance() (*Daraja_response, error) {
 	defer resp_daraja.Body.Close()
 	body, err := ioutil.ReadAll(resp_daraja.Body)
 	if err != nil {
-
+		return resp, fmt.Errorf("`ioutil.ReadAll/1` got error: %q", err)
+	}
+	err = json.Unmarshal(body, resp)
+	if err != nil {
+		return resp, fmt.Errorf("`json.Unmarshal/2` got error: %q", err)
 	}
 	return resp, nil
 }
