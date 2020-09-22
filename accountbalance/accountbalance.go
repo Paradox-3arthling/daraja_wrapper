@@ -14,15 +14,14 @@ type Account_balance struct {
 }
 
 type Acc_bal_payload struct {
-	Initiator              string
-	SecurityCredential     string
-	CommandID              string
-	PartyB                 string
-	ReceiverIdentifierType string
-	Remarks                string
-	QueueTimeOutURL        string
-	ResultURL              string
-	AccountType            string
+	Initiator          string
+	SecurityCredential string
+	CommandID          string
+	PartyA             string
+	IdentifierType     string
+	Remarks            string
+	QueueTimeOutURL    string
+	ResultURL          string
 }
 
 func Init(key, secret string, prod bool) *Account_balance {
@@ -45,11 +44,13 @@ const ACC_URL = "https://sandbox.safaricom.co.ke/mpesa/accountbalance/v1/query"
 
 func (a *Account_balance) GetAcccountBalance() (*Daraja_response, error) {
 	var resp *Daraja_response
+	a.Payload.CommandID = "AccountBalance"
+	a.Payload.IdentifierType = "4"
 	req_payload, err := json.Marshal(a.Payload)
 	if err != nil {
 		return resp, fmt.Errorf("`json.Marshal/1` got error: %q", err)
 	}
-	fmt.Printf("payload: %q\n", req_payload)
+
 	requester := &daraja_wrapper.Requester{
 		Url:     ACC_URL,
 		Payload: req_payload,
@@ -61,7 +62,7 @@ func (a *Account_balance) GetAcccountBalance() (*Daraja_response, error) {
 	if err != nil {
 		return resp, fmt.Errorf("`ioutil.ReadAll/1` got error: %q", err)
 	}
-	err = json.Unmarshal(body, resp)
+	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		return resp, fmt.Errorf("`json.Unmarshal/2` got error: %q", err)
 	}
